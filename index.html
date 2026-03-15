@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GANGSTER SHII - Complete Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .screen.active {
+            display: flex;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* MAIN MENU */
+        #mainMenu {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%, #000 100%);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-title {
+            font-size: 4em;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .menu-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .menu-btn:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+        }
+
+        /* GAME SCREEN */
+        #gameScreen {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            flex-direction: column;
+        }
+
+        .game-header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #ff0000;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 1.1em;
+            margin: 5px 15px;
+        }
+
+        .stat-label {
+            color: #ffaa00;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .game-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .mission-card, .shop-item, .gang-member {
+            background: rgba(50, 50, 50, 0.8);
+            border: 2px solid #ff0000;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .mission-card:hover, .shop-item:hover, .gang-member:hover {
+            background: rgba(80, 80, 80, 0.9);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .mission-title, .item-name {
+            font-size: 1.2em;
+            color: #ffaa00;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .mission-reward, .item-price {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .mission-difficulty {
+            color: #ff6600;
+            margin-top: 10px;
+        }
+
+        .start-btn, .buy-btn {
+            background: #00ff00;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .start-btn:hover, .buy-btn:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+
+        .game-controls {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 2px solid #ff0000;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #0055cc;
+            transform: scale(1.05);
+        }
+
+        /* GAME MODE SELECTION */
+        #modeSelection {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mode-selection-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .mode-card {
+            background: rgba(50, 50, 50, 0.8);
+            border: 2px solid #ffaa00;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .mode-card:hover {
+            background: rgba(80, 80, 80, 0.9);
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .mode-card h3 {
+            color: #ffaa00;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .mode-card p {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        /* GAME OVER */
+        #gameOver {
+            background: rgba(0, 0, 0, 0.9);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-over-content {
+            text-align: center;
+        }
+
+        .game-over-content h1 {
+            font-size: 3em;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        .game-over-stats {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #00ff00;
+        }
+
+        .game-over-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff0000;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cc0000;
+        }
+
+        .time-display {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 15px;
+            border-radius: 3px;
+            border: 1px solid #ffaa00;
+        }
+
+        .weather-display {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 15px;
+            border-radius: 3px;
+            border: 1px solid #0066ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <!-- MAIN MENU SCREEN -->
+    <div id="mainMenu" class="screen active">
+        <div class="menu-title">GANGSTER SHII</div>
+        <div class="menu-buttons">
+            <button class="menu-btn" onclick="goToModeSelection()">Start Game</button>
+            <button class="menu-btn" onclick="loadGame()">Load Game</button>
+            <button class="menu-btn" onclick="showInstructions()">Instructions</button>
+            <button class="menu-btn" onclick="alert('Settings Coming Soon!')">Settings</button>
+        </div>
+    </div>
+
+    <!-- MODE SELECTION SCREEN -->
+    <div id="modeSelection" class="screen">
+        <h2 style="color: #ff0000; font-size: 2em; margin-bottom: 30px;">Choose Your Path</h2>
+        <div class="mode-selection-container">
+            <div class="mode-card" onclick="startGameMode('drug_dealer')">
+                <h3>💊 Drug Dealer</h3>
+                <p>Build a drug empire, manage suppliers, and dominate the market.</p>
+            </div>
+            <div class="mode-card" onclick="startGameMode('hitman')">
+                <h3>🔫 Hitman</h3>
+                <p>Accept contracts, eliminate targets, and earn big money.</p>
+            </div>
+            <div class="mode-card" onclick="startGameMode('thief')">
+                <h3>💰 Thief</h3>
+                <p>Rob banks, steal cars, and outsmart the police.</p>
+            </div>
+            <div class="mode-card" onclick="startGameMode('gang_leader')">
+                <h3>👑 Gang Leader</h3>
+                <p>Build a crew, control territory, and wage gang wars.</p>
+            </div>
+        </div>
+        <button class="menu-btn" style="margin-top: 30px;" onclick="backToMainMenu()">Back to Main Menu</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="gameScreen" class="screen">
+        <div class="game-header">
+            <div class="stat">
+                <span class="stat-label">💰 Money:</span>
+                <span class="stat-value" id="moneyDisplay">$0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">⭐ Reputation:</span>
+                <span class="stat-value" id="reputationDisplay">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">👥 Gang Size:</span>
+                <span class="stat-value" id="gangSizeDisplay">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🎯 Level:</span>
+                <span class="stat-value" id="levelDisplay">1</span>
+            </div>
+            <div class="time-display" id="timeDisplay">Day 1 - Morning</div>
+            <div class="weather-display" id="weatherDisplay">Weather: Clear</div>
+        </div>
+
+        <div class="game-content" id="gameContent">
+            <!-- Missions and activities will be dynamically added here -->
+        </div>
+
+        <div class="game-controls">
+            <button class="control-btn" onclick="buyWeapon()">🔫 Buy Weapons</button>
+            <button class="control-btn" onclick="buyCar()">🚗 Buy Cars</button>
+            <button class="control-btn" onclick="buyHouse()">🏠 Buy House</button>
+            <button class="control-btn" onclick="recruitMember()">👤 Recruit</button>
+            <button class="control-btn" onclick="saveGame()">💾 Save Game</button>
+            <button class="control-btn" onclick="backToMainMenu()">🏠 Main Menu</button>
+        </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="gameOver" class="screen">
+        <div class="game-over-content">
+            <h1 id="gameOverTitle">GAME OVER</h1>
+            <div class="game-over-stats">
+                <p>Final Money: <span id="finalMoney">$0</span></p>
+                <p>Final Reputation: <span id="finalReputation">0</span></p>
+                <p>Days Survived: <span id="daysSurvived">0</span></p>
+                <p>Gang Members: <span id="finalGangSize">0</span></p>
+            </div>
+            <div class="game-over-buttons">
+                <button class="menu-btn" onclick="goToModeSelection()">Play Again</button>
+                <button class="menu-btn" onclick="backToMainMenu()">Main Menu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // GAME STATE
+    const gameState = {
+        mode: null,
+        money: 10000,
+        reputation: 0,
+        gangSize: 0,
+        level: 1,
+        day: 1,
+        time: 'morning', // morning, afternoon, evening, night
+        weather: 'clear', // clear, rainy, foggy, stormy
+        inventory: {
+            weapons: [],
+            cars: [],
+            houses: 0
+        },
+        completedMissions: 0,
+        daysSurvived: 0
+    };
+
+    const missions = {
+        drug_dealer: [
+            { title: 'Deliver Package', reward: 500, difficulty: 'Easy', description: 'Deliver a package to the east side.' },
+            { title: 'Recruit Supplier', reward: 1500, difficulty: 'Medium', description: 'Find a new drug supplier.' },
+            { title: 'Expand Territory', reward: 3000, difficulty: 'Hard', description: 'Take over a rival dealer\'s territory.' },
+            { title: 'Avoid Police', reward: 800, difficulty: 'Easy', description: 'Avoid police patrols.' }
+        ],
+        hitman: [
+            { title: 'Eliminate Target', reward: 2000, difficulty: 'Hard', description: 'Eliminate a high-value target.' },
+            { title: 'Spy on Rival', reward: 1000, difficulty: 'Medium', description: 'Gather intel on a rival gang.' },
+            { title: 'Steal Documents', reward: 1500, difficulty: 'Medium', description: 'Steal classified documents.' },
+            { title: 'Quick Hit', reward: 800, difficulty: 'Easy', description: 'Quick assassination job.' }
+        ],
+        thief: [
+            { title: 'Rob Store', reward: 1200, difficulty: 'Easy', description: 'Rob a convenience store.' },
+            { title: 'Steal Car', reward: 2500, difficulty: 'Medium', description: 'Steal a luxury car.' },
+            { title: 'Rob Bank', reward: 5000, difficulty: 'Hard', description: 'Plan and execute a bank heist.' },
+            { title: 'Pickpocket', reward: 300, difficulty: 'Easy', description: 'Pickpocket on the street.' }
+        ],
+        gang_leader: [
+            { title: 'Recruit Members', reward: 500, difficulty: 'Easy', description: 'Recruit new gang members.' },
+            { title: 'Control Block', reward: 2000, difficulty: 'Medium', description: 'Control a city block.' },
+            { title: 'Gang War', reward: 4000, difficulty: 'Hard', description: 'Engage in gang warfare.' },
+            { title: 'Collect Tribute', reward: 800, difficulty: 'Easy', description: 'Collect tribute from businesses.' }
+        ]
+    };
+
+    const shops = {
+        weapons: [
+            { name: '9mm Pistol', price: 500, description: 'Basic handgun' },
+            { name: 'Combat Shotgun', price: 1500, description: 'Powerful close-range weapon' },
+            { name: 'AK-47', price: 3000, description: 'Assault rifle' },
+            { name: 'Sniper Rifle', price: 5000, description: 'Long-range precision weapon' }
+        ],
+        cars: [
+            { name: 'Honda Civic', price: 8000, description: 'Fast and reliable' },
+            { name: 'Dodge Charger', price: 20000, description: 'Muscle car' },
+            { name: 'Ferrari', price: 50000, description: 'Luxury supercar' },
+            { name: 'Armored SUV', price: 75000, description: 'Protected vehicle' }
+        ],
+        houses: [
+            { name: 'Small Apartment', price: 15000, description: 'Basic hideout' },
+            { name: 'Penthouse', price: 100000, description: 'Luxury residence' },
+            { name: 'Mansion', price: 250000, description: 'Elite property' }
+        ]
+    };
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function backToMainMenu() {
+        showScreen('mainMenu');
+    }
+
+    function goToModeSelection() {
+        showScreen('modeSelection');
+    }
+
+    function startGameMode(mode) {
+        gameState.mode = mode;
+        gameState.money = 10000;
+        gameState.reputation = 0;
+        gameState.gangSize = 0;
+        gameState.level = 1;
+        gameState.day = 1;
+        gameState.time = 'morning';
+        gameState.daysSurvived = 0;
+        updateGameDisplay();
+        showScreen('gameScreen');
+    }
+
+    function updateGameDisplay() {
+        document.getElementById('moneyDisplay').textContent = '$' + gameState.money.toLocaleString();
+        document.getElementById('reputationDisplay').textContent = gameState.reputation;
+        document.getElementById('gangSizeDisplay').textContent = gameState.gangSize;
+        document.getElementById('levelDisplay').textContent = gameState.level;
+        document.getElementById('timeDisplay').textContent = `Day ${gameState.day} - ${capitalizeFirst(gameState.time)}`;
+        document.getElementById('weatherDisplay').textContent = `Weather: ${capitalizeFirst(gameState.weather)}`;
+        
+        updateMissionsDisplay();
+    }
+
+    function updateMissionsDisplay() {
+        const gameContent = document.getElementById('gameContent');
+        gameContent.innerHTML = '';
+
+        const missionList = missions[gameState.mode] || [];
+        
+        missionList.forEach((mission, index) => {
+            const card = document.createElement('div');
+            card.className = 'mission-card';
+            card.innerHTML = `
+                <div class="mission-title">${mission.title}</div>
+                <p>${mission.description}</p>
+                <div class="mission-difficulty">Difficulty: ${mission.difficulty}</div>
+                <div class="mission-reward">Reward: $${mission.reward}</div>
+                <button class="start-btn" onclick="completeMission(${index}, ${mission.reward})">Start Mission</button>
+            `;
+            gameContent.appendChild(card);
+        });
+    }
+
+    function completeMission(index, reward) {
+        gameState.money += reward;
+        gameState.reputation += Math.floor(reward / 500);
+        gameState.completedMissions += 1;
+        
+        // Level up every 5 missions
+        if (gameState.completedMissions % 5 === 0) {
+            gameState.level += 1;
+            alert(`🎉 Level Up! You are now Level ${gameState.level}`);
+        }
+
+        progressDay();
+        updateGameDisplay();
+        alert(`✅ Mission Complete! You earned $${reward} and ${Math.floor(reward / 500)} reputation!`);
+    }
+
+    function progressDay() {
+        const times = ['morning', 'afternoon', 'evening', 'night'];
+        const weathers = ['clear', 'rainy', 'foggy', 'stormy'];
+        
+        const currentTimeIndex = times.indexOf(gameState.time);
+        
+        if (currentTimeIndex === times.length - 1) {
+            gameState.day += 1;
+            gameState.daysSurvived += 1;
+            gameState.time = 'morning';
+            // Random weather
+            gameState.weather = weathers[Math.floor(Math.random() * weathers.length)];
+        } else {
+            gameState.time = times[currentTimeIndex + 1];
+        }
+
+        // Random events
+        if (Math.random() < 0.2) {
+            const event = Math.floor(Math.random() * 3);
+            switch(event) {
+                case 0:
+                    gameState.money += 500;
+                    alert('💰 Lucky! Found $500 on the street!');
+                    break;
+                case 1:
+                    gameState.money -= 500;
+                    alert('⚠️ Got mugged! Lost $500!');
+                    break;
+                case 2:
+                    gameState.reputation += 5;
+                    alert('⭐ Your reputation increased!');
+                    break;
+            }
+        }
+
+        // Check if player is caught
+        if (Math.random() < 0.1) {
+            alert('❌ You got caught by the police! Game Over!');
+            endGame('BUSTED BY POLICE');
+        }
+    }
+
+    function buyWeapon() {
+        const weapon = shops.weapons[Math.floor(Math.random() * shops.weapons.length)];
+        if (gameState.money >= weapon.price) {
+            gameState.money -= weapon.price;
+            gameState.inventory.weapons.push(weapon.name);
+            alert(`✅ Bought ${weapon.name} for $${weapon.price}!`);
+            updateGameDisplay();
+        } else {
+            alert(`❌ Not enough money! You need $${weapon.price} but have $${gameState.money}`);
+        }
+    }
+
+    function buyCar() {
+        const car = shops.cars[Math.floor(Math.random() * shops.cars.length)];
+        if (gameState.money >= car.price) {
+            gameState.money -= car.price;
+            gameState.inventory.cars.push(car.name);
+            alert(`✅ Bought ${car.name} for $${car.price}!`);
+            updateGameDisplay();
+        } else {
+            alert(`❌ Not enough money! You need $${car.price} but have $${gameState.money}`);
+        }
+    }
+
+    function buyHouse() {
+        const house = shops.houses[gameState.inventory.houses];
+        if (!house) {
+            alert('❌ You already own all available houses!');
+            return;
+        }
+        if (gameState.money >= house.price) {
+            gameState.money -= house.price;
+            gameState.inventory.houses += 1;
+            alert(`✅ Bought ${house.name} for $${house.price}!`);
+            updateGameDisplay();
+        } else {
+            alert(`❌ Not enough money! You need $${house.price} but have $${gameState.money}`);
+        }
+    }
+
+    function recruitMember() {
+        const recruitCost = 2000;
+        if (gameState.money >= recruitCost) {
+            gameState.money -= recruitCost;
+            gameState.gangSize += 1;
+            alert(`✅ Recruited a new gang member! Gang size: ${gameState.gangSize}`);
+            updateGameDisplay();
+        } else {
+            alert(`❌ Not enough money to recruit! Need $${recruitCost}`);
+        }
+    }
+
+    function saveGame() {
+        localStorage.setItem('gangsterShiiSave', JSON.stringify(gameState));
+        alert('💾 Game saved successfully!');
+    }
+
+    function loadGame() {
+        const saved = localStorage.getItem('gangsterShiiSave');
+        if (saved) {
+            Object.assign(gameState, JSON.parse(saved));
+            updateGameDisplay();
+            showScreen('gameScreen');
+            alert('✅ Game loaded successfully!');
+        } else {
+            alert('❌ No saved game found!');
+        }
+    }
+
+    function endGame(reason) {
+        document.getElementById('gameOverTitle').textContent = reason;
+        document.getElementById('finalMoney').textContent = '$' + gameState.money.toLocaleString();
+        document.getElementById('finalReputation').textContent = gameState.reputation;
+        document.getElementById('daysSurvived').textContent = gameState.daysSurvived;
+        document.getElementById('finalGangSize').textContent = gameState.gangSize;
+        showScreen('gameOver');
+    }
+
+    function showInstructions() {
+        const instructions = `
+GANGSTER SHII - INSTRUCTIONS
+
+Choose your path: Drug Dealer, Hitman, Thief, or Gang Leader
+
+OBJECTIVES:
+• Complete missions to earn money and reputation
+• Buy weapons, cars, and houses to increase your power
+• Recruit gang members to build your crew
+• Survive as long as possible
+
+TIPS:
+• Higher difficulty missions pay more
+• Your reputation unlocks new opportunities
+• Different times of day affect mission availability
+• Random events can change your fortune
+• Don't get caught by the police!
+
+MODES:
+💊 Drug Dealer: Build a narcotics empire
+🔫 Hitman: Accept assassination contracts
+💰 Thief: Commit robberies and heists
+👑 Gang Leader: Control territory and wage war
+
+Good luck, gangster!
+        `;
+        alert(instructions);
+    }
+
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Auto-save every 2 minutes
+    setInterval(saveGame, 120000);
+
+    // Initialize
+    updateGameDisplay();
+</script>
+
+</body>
+</html>
